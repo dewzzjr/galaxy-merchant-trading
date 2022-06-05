@@ -13,27 +13,35 @@ func (q *Query) String() string {
 }
 
 func (q *Query) Process() (err error) {
-	words := strings.Split(strings.ToLower(q.Question), " is ")
+	words := q.sanitize()
 	if len(words) != 2 {
 		err = model.ErrInvalidQuestion
 		return
 	}
 
-	if isQuestion(words[0]) {
+	if types, ok := isQuestion(words[0]); ok {
 		question := sanitizeQuestion(words[1])
-		if len(question) <= 2 {
-			err = model.ErrInvalidQuestion
-			return
-		}
-		var unit model.Unit
-		unit, err = q.createUnit(question[len(question)-1])
-		if err != nil {
-			return
-		}
 		q.Action = model.ActionQuestion
-		q.Answer = model.Answer{
-			Words: strings.Join(question[:len(question)-1], " "),
-			Unit:  unit,
+		switch types {
+		case model.HowManyCredits:
+			if len(question) <= 2 {
+				err = model.ErrInvalidQuestion
+				return
+			}
+			var unit model.Unit
+			unit, err = q.createUnit(question[len(question)-1])
+			if err != nil {
+				return
+			}
+			q.Answer = model.Answer{
+				Words: strings.Join(question[:len(question)-1], " "),
+				Unit:  unit,
+			}
+			return
+		case model.HowMuch:
+			q.Answer = model.Answer{
+				Words: strings.Join(question, " "),
+			}
 		}
 		return
 	}
@@ -80,7 +88,7 @@ func (q *Query) UseCustomUnit(use bool) {
 }
 
 func (q *Query) createUnit(s string) (model.Unit, error) {
-	s = strings.ToTitle(s)
+	s = model.Capitalize.String(s)
 	unit := model.Unit(s)
 	if !unit.Valid() && !q.useCustomUnit {
 		return unit, model.ErrInvalidUnit
@@ -88,6 +96,9 @@ func (q *Query) createUnit(s string) (model.Unit, error) {
 	return unit, nil
 }
 
+func (q *Query) sanitize() []string {
+	return strings.Split(strings.ToLower(strings.TrimSpace(q.Question)), " is ")
+}
 func sanitizeQuestion(s string) []string {
 	return strings.Split(strings.TrimSpace(strings.Trim(s, "?")), " ")
 }
@@ -97,18 +108,13 @@ func isDefine(symbol string) (string, bool) {
 	return symbol, roman.IsValidSymbol(symbol)
 }
 
-func isQuestion(line string) bool {
-	q := []string{
-		"how much",
-		"how many credits",
-	}
-
-	for _, v := range q {
+func isQuestion(line string) (model.Question, bool) {
+	for i, v := range model.QuestionWord {
 		if line == v {
-			return true
+			return model.Question(i), true
 		}
 	}
-	return false
+	return -1, false
 }
 
 func isStatement(line string) (credits float64, ok bool) {
