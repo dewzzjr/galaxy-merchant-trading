@@ -1,13 +1,12 @@
 package roman
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/pkg/errors"
 )
 
-func Read(s string) (numeral int, err error) {
+func ReadToDecimal(s string) (numeral int, err error) {
 	symbols := sanitize(s)
 
 	var isSubstracted bool
@@ -93,26 +92,26 @@ func validateSymbol(index int, symbols []string) (currentNum int, nextNum int, e
 	var ok bool
 	currentNum, ok = mapRoman[symbols[index]]
 	if !ok {
-		err = errors.WithMessage(
+		err = errors.Wrapf(
 			ErrInvalidSymbolSequence,
-			fmt.Sprintf("symbol '%s' not found", symbols[index]),
+			"symbol '%s' not found", symbols[index],
 		)
 		return
 	}
 
 	nextNum, ok = mapRoman[symbols[index+1]]
 	if !ok {
-		err = errors.WithMessage(
+		err = errors.Wrapf(
 			ErrInvalidSymbolSequence,
-			fmt.Sprintf("symbols '%s' not found", symbols[index]),
+			"symbols '%s' not found", symbols[index+1],
 		)
 		return
 	}
 
 	if !canRepeat(symbols[index], symbols[index:]) {
-		err = errors.WithMessage(
+		err = errors.Wrapf(
 			ErrInvalidSymbolSequence,
-			fmt.Sprintf("repeated symbols '%s'", symbols[index]),
+			"repeated symbols '%s'", symbols[index],
 		)
 		return
 	}
