@@ -190,6 +190,7 @@ func TestQuery_New(t *testing.T) {
 				t.Errorf("Query.New() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
+			got.Process = nil
 			assert.Equal(t, &tt.want, got)
 			assert.Equal(t, tt.want.String(), got.Question)
 		})

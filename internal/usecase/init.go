@@ -5,9 +5,10 @@ import (
 	"github.com/dewzzjr/galaxy-merchant-trading/internal/usecase/translator"
 )
 
+type Builder func(question string) (*query.Query, error)
 type Query *query.Query
 type Usecase struct {
-	Question  query.Builder
+	Question  Builder
 	Translate *translator.Translator
 }
 

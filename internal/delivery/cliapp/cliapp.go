@@ -41,6 +41,10 @@ func (a *CommandLine) Run(c *cli.Context) (err error) {
 
 		var q usecase.Query
 		q, err = a.Usecase.Question(text)
+		if a.Param.CustomUnit {
+			q.UseCustomUnit = true
+			err = q.Process()
+		}
 		switch q.Action {
 		case model.ActionDefine:
 			e := a.Usecase.Translate.Define(q.Answer.Words, q.Answer.Symbol)

@@ -12,7 +12,7 @@ func (q *Query) String() string {
 	return q.Question
 }
 
-func (q *Query) Process() (err error) {
+func (q *Query) process() (err error) {
 	words := q.sanitize()
 	if len(words) != 2 {
 		err = model.ErrInvalidQuestion
@@ -83,14 +83,10 @@ func (q *Query) Process() (err error) {
 	return
 }
 
-func (q *Query) UseCustomUnit(use bool) {
-	q.useCustomUnit = use
-}
-
 func (q *Query) createUnit(s string) (model.Unit, error) {
 	s = model.Capitalize.String(s)
 	unit := model.Unit(s)
-	if !unit.Valid() && !q.useCustomUnit {
+	if !unit.Valid() && !q.UseCustomUnit {
 		return unit, model.ErrInvalidUnit
 	}
 	return unit, nil
