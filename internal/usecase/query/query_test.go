@@ -43,12 +43,50 @@ func TestQuery_New(t *testing.T) {
 		},
 		{
 			name:     "success",
+			question: "glob Silver is 2 Credits",
+			want: query.Query{
+				Question: "glob Silver is 2 Credits",
+				Action:   model.ActionStatement,
+				Answer: model.Answer{
+					Words:  "glob",
+					Unit:   model.UnitSilver,
+					Credit: 2,
+				},
+			},
+		},
+		{
+			name:     "success",
+			question: "glob Silver is 1 Credit",
+			want: query.Query{
+				Question: "glob Silver is 1 Credit",
+				Action:   model.ActionStatement,
+				Answer: model.Answer{
+					Words:  "glob",
+					Unit:   model.UnitSilver,
+					Credit: 1,
+				},
+			},
+		},
+		{
+			name:     "success",
 			question: "how many Credits is glob prok Silver ?",
 			want: query.Query{
 				Question: "how many Credits is glob prok Silver ?",
 				Action:   model.ActionQuestion,
 				Answer: model.Answer{
 					Words: "glob prok",
+					Unit:  model.UnitSilver,
+				},
+			},
+		},
+		{
+			name:     "success",
+			question: "how many Credits is glob Silver ?",
+			want: query.Query{
+				Question: "how many Credits is glob Silver ?",
+				Action:   model.ActionQuestion,
+				Answer: model.Answer{
+					Words: "glob",
 					Unit:  model.UnitSilver,
 				},
 			},
@@ -64,6 +102,86 @@ func TestQuery_New(t *testing.T) {
 				},
 			},
 		},
+		{
+			name:     "success",
+			question: "how much is pish?",
+			want: query.Query{
+				Question: "how much is pish?",
+				Action:   model.ActionQuestion,
+				Answer: model.Answer{
+					Words: "pish",
+				},
+			},
+		},
+		{
+			name:     "failed",
+			question: "glob glob is I",
+			want:     query.Query{Question: "glob glob is I"},
+			wantErr:  true,
+		},
+		{
+			name:     "failed",
+			question: "test is test",
+			want:     query.Query{Question: "test is test"},
+			wantErr:  true,
+		},
+		{
+			name:     "failed",
+			question: "test ",
+			want:     query.Query{Question: "test "},
+			wantErr:  true,
+		},
+		{
+			name:     "failed",
+			question: "how much is ?",
+			want: query.Query{
+				Question: "how much is ?",
+				Action:   model.ActionQuestion,
+			},
+			wantErr: false,
+		},
+		{
+			name:     "failed",
+			question: "Silver is 2 Credits",
+			want:     query.Query{Question: "Silver is 2 Credits"},
+			wantErr:  true,
+		},
+		{
+			name:     "failed",
+			question: "pish Rock is 2 Credits",
+			want:     query.Query{Question: "pish Rock is 2 Credits"},
+			wantErr:  true,
+		},
+		{
+			name:     "failed",
+			question: "how many Credits is glob? ",
+			want: query.Query{
+				Question: "how many Credits is glob? ",
+				Action:   model.ActionQuestion,
+			},
+			wantErr: true,
+		},
+		{
+			name:     "failed",
+			question: "how many Credits is glob Rock? ",
+			want: query.Query{
+				Question: "how many Credits is glob Rock? ",
+				Action:   model.ActionQuestion,
+			},
+			wantErr: true,
+		},
+		{
+			name:     "failed",
+			question: "glob Silver is two Credits",
+			want:     query.Query{Question: "glob Silver is two Credits"},
+			wantErr:  true,
+		},
+		{
+			name:     "failed",
+			question: "glob Silver is 2 cratt",
+			want:     query.Query{Question: "glob Silver is 2 cratt"},
+			wantErr:  true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -73,6 +191,7 @@ func TestQuery_New(t *testing.T) {
 				return
 			}
 			assert.Equal(t, &tt.want, got)
+			assert.Equal(t, tt.want.String(), got.Question)
 		})
 	}
 }

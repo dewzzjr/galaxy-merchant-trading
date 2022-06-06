@@ -11,9 +11,9 @@ import (
 
 func TestCommandLine_Start(t *testing.T) {
 	result := `pish tegj glob glob is 42
-glob prok is 68.00 Credits
-glob prok is 57800.00 Credits
-glob prok is 782.00 Credits
+glob prok Silver is 68.00 Credits
+glob prok Gold is 57800.00 Credits
+glob prok Iron is 782.00 Credits
 `
 	tests := []struct {
 		name      string

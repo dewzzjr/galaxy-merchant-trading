@@ -44,37 +44,44 @@ func (a *CommandLine) Run(c *cli.Context) (err error) {
 		switch q.Action {
 		case model.ActionDefine:
 			e := a.Usecase.Translate.Define(q.Answer.Words, q.Answer.Symbol)
-			a.printErr(e)
+			a.err(e)
 		case model.ActionStatement:
 			e := a.Usecase.Translate.Statement(q.Answer.Words, q.Answer.Unit, q.Answer.Credit)
-			a.printErr(e)
+			a.err(e)
 		case model.ActionQuestion:
 			if q.Answer.Unit == "" {
 				number, e := a.Usecase.Translate.Translate(q.Answer.Words)
-				if !a.printErr(e) {
+				if !a.err(e) {
 					fmt.Fprintf(a.Writer, model.AnswerTranslate, q.Answer.Words, number)
 				}
 			} else {
 				credits, e := a.Usecase.Translate.Convert(q.Answer.Words, q.Answer.Unit)
-				if !a.printErr(e) {
-					fmt.Fprintf(a.Writer, model.AnswerCredit, q.Answer.Words, credits)
+				if !a.err(e) {
+					fmt.Fprintf(a.Writer, model.AnswerCredit, q.Answer.Words, q.Answer.Unit, credits)
 				}
 			}
 		default:
 			if isExit(text) {
 				return nil
 			}
-			a.printErr(err)
+			a.err(err)
 		}
 	}
 }
 
-func (a *CommandLine) printErr(err error) bool {
+func (a *CommandLine) err(err error) bool {
 	if err == nil {
 		return false
 	}
+	a.debug(err)
 	fmt.Fprintln(a.Writer, model.DefaultAnswer)
 	return true
+}
+
+func (a *CommandLine) debug(err error) {
+	if a.Param.Verbose {
+		fmt.Fprintln(a.Writer, err)
+	}
 }
 
 func isExit(text string) bool {
