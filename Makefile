@@ -7,6 +7,6 @@ test:
 	go vet ./...
 	go test -race -cover -v ./...
 build:
-	go build cmd/main.go
+	go build -o galaxy-merchant-trading cmd/main.go
 
 all: tidy mod test build
