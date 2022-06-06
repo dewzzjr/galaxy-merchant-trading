@@ -14,3 +14,5 @@ func New(question string) (*Query, error) {
 	q := &Query{Question: question}
 	return q, q.Process()
 }
+
+type Builder func(question string) (*Query, error)

@@ -73,8 +73,6 @@ func TestQuery_New(t *testing.T) {
 				return
 			}
 			assert.Equal(t, &tt.want, got)
-			// assert.Equal(t, tt.want.Action, got.Action)
-			// assert.Equal(t, tt.want.Answer, got.Answer)
 		})
 	}
 }

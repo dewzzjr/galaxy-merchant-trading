@@ -5,6 +5,8 @@
 *.so
 *.dylib
 main
+cmd/__debug_bin
+galaxy-merchant-trading
 
 # Test binary, built with `go test -c`
 *.test
@@ -16,4 +18,6 @@ main
 vendor/
 
 # Visual Studio Code configuration
-.vscode
+!.vscode
+.vscode/*
+!.vscode/launch.json
