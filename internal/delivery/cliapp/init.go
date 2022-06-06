@@ -43,6 +43,18 @@ func New(w io.Writer, usecase *usecase.Usecase) *CommandLine {
 						Usage:       "Load input from `FILE`",
 						Destination: &cmd.Param.File,
 					},
+					&cli.BoolFlag{
+						Name:        "verbose",
+						Aliases:     []string{"v"},
+						Usage:       "Add error message on output",
+						Destination: &cmd.Param.Verbose,
+					},
+					&cli.BoolFlag{
+						Name:        "custom-unit",
+						Aliases:     []string{"custom"},
+						Usage:       "Remove validation to check unit other than: Silver, Gold, Iron",
+						Destination: &cmd.Param.CustomUnit,
+					},
 				},
 				Action: cmd.Run,
 			},

@@ -8,5 +8,5 @@ type Answer struct {
 }
 
 const DefaultAnswer = "I have no idea what you are talking about"
-const AnswerCredit = "%s is %.2f Credits\n"
+const AnswerCredit = "%s %s is %.2f Credits\n"
 const AnswerTranslate = "%s is %d\n"

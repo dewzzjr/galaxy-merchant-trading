@@ -9,5 +9,7 @@ based on roman numerals.`
 )
 
 type Param struct {
-	File string
+	File       string
+	Verbose    bool
+	CustomUnit bool
 }

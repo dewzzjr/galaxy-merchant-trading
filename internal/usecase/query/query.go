@@ -24,7 +24,7 @@ func (q *Query) Process() (err error) {
 		q.Action = model.ActionQuestion
 		switch types {
 		case model.HowManyCredits:
-			if len(question) <= 2 {
+			if len(question) < 2 {
 				err = model.ErrInvalidQuestion
 				return
 			}
@@ -61,7 +61,7 @@ func (q *Query) Process() (err error) {
 
 	if credits, ok := isStatement(words[1]); ok {
 		statement := strings.Split(words[0], " ")
-		if len(statement) <= 2 {
+		if len(statement) < 2 {
 			err = model.ErrInvalidQuestion
 			return
 		}
@@ -123,7 +123,7 @@ func isStatement(line string) (credits float64, ok bool) {
 		return
 	}
 
-	if q[1] != "credits" {
+	if q[1] != "credits" && q[1] != "credit" {
 		return
 	}
 
